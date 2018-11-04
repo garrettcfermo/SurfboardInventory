@@ -13,10 +13,47 @@
 
 </head>
 <body>
-  <H1>Hello Brah!!!</H1>
-
+  <H1>Surfboard Inventory</H1>
+  <form>
+    <label for="name">Surfboard Name:</label>
+    <input type="text" id="name" name="name" placeholder="Crowd Killer" />
+    <label for="type">Surfboard Type:</label>
+    <input type="text" id="type" name="type" placeholder="High Perfermance" />
+    <label for="price">Price:</label>
+    <input type="text" id="price" name="price" placeholder="500" />
+    <label for="price">Qty:</label>
+    <input type="text" id="qty" name="qty" placeholder="5" />
+    <button onclick="addSurfboard()">Add Surfboard</button>
+  </form>
 
 <script>
+
+  //Add a Surfboard
+  const addSurfboard = () => {
+    event.preventDefault()
+    console.log({
+      name: document.querySelector('#name').value,
+      type: document.querySelector('#type').value,
+      price: document.querySelector('#price').value,
+      qty: document.querySelector('#qty').value,
+      })
+  fetch('/surfboards', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json; charset=utf-8", },
+      body: JSON.stringify({
+        name: document.querySelector('#name').value,
+        type: document.querySelector('#type').value,
+        price: document.querySelector('#price').value,
+        qty: document.querySelector('#qty').value,
+      })
+    }).then(r => {
+      document.querySelector('#name').value = ''
+      // getToDos()
+    }).catch(e => console.log(e))
+
+  }
+
+
 </script>
 
 </body>
