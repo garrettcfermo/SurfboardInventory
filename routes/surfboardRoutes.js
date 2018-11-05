@@ -14,7 +14,6 @@ module.exports = app => {
   })
 
   app.post('/surfboards', (req, res) => {
-    console.log(req.body)
     db.surfboards.create(req.body)
       .then(() => res.sendStatus(200))
       .catch(e => console.log(e))

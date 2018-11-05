@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +13,7 @@
 
 
 </head>
+
 <body>
   <H1>Surfboard Inventory</H1>
   <form>
@@ -26,35 +28,48 @@
     <button onclick="addSurfboard()">Add Surfboard</button>
   </form>
 
-<script>
+  <ul id="surfboardList"></ul>
 
-  //Add a Surfboard
-  const addSurfboard = () => {
-    event.preventDefault()
-    console.log({
-      name: document.querySelector('#name').value,
-      type: document.querySelector('#type').value,
-      price: document.querySelector('#price').value,
-      qty: document.querySelector('#qty').value,
-      })
-  fetch('/surfboards', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json; charset=utf-8", },
-      body: JSON.stringify({
-        name: document.querySelector('#name').value,
-        type: document.querySelector('#type').value,
-        price: document.querySelector('#price').value,
-        qty: document.querySelector('#qty').value,
-      })
-    }).then(r => {
-      document.querySelector('#name').value = ''
-      // getToDos()
-    }).catch(e => console.log(e))
 
+  <script>
+
+    //Add a Surfboard
+    const addSurfboard = () => {
+      event.preventDefault()
+      fetch('/surfboards', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json; charset=utf-8", },
+        body: JSON.stringify({
+          name: document.querySelector('#name').value,
+          type: document.querySelector('#type').value,
+          price: document.querySelector('#price').value,
+          qty: document.querySelector('#qty').value,
+        })
+      }).then(r => {
+        document.querySelector('#name').value = ''
+        getSurfboards()
+      }).catch(e => console.log(e))
+    }
+
+    // Retreive all of the Surfboards Info
+  const getSurfboards = () => {
+    fetch('/surfboards')
+      .then(r => r.json())
+      .then(r => {
+        document.querySelector('#surfboardList').innerHTML = ''
+        r.forEach(item => {
+          let listItem = document.createElement('li')
+          listItem.innerHTML = `<span>${item.name}</span><input id="isDone" type="checkbox" name="${item.name}" value="${item.name}" checked /> <button value=${item.name} id="dtlBTN">Remove</button>`
+          document.querySelector('#surfboardList').appendChild(listItem)
+        });
+      })
+      .catch(e => console.log(e))
   }
 
+  getSurfboards()
 
-</script>
+  </script>
 
 </body>
+
 </html>
