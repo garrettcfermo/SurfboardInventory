@@ -8,7 +8,7 @@ module.exports = app => {
   })
 
   app.get('/surfboards/:id', (req, res) => {
-    db.surfboards.findOne({ where: { name: req.params.id} })
+    db.surfboards.findOne({ where: { id: req.params.id} })
       .then(r => res.json(r))
       .catch(e => console.log(e))
   })

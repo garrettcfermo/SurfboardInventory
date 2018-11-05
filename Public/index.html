@@ -26,6 +26,7 @@
     <label for="price">Qty:</label>
     <input type="text" id="qty" name="qty" placeholder="5" />
     <button onclick="addSurfboard()">Add Surfboard</button>
+    <button onclick="clearSurfboard()">Clear</button>
   </form>
 
   <!-- <ul id="surfboardList"></ul> -->
@@ -36,13 +37,21 @@
       <th>Type</th>
       <th>Price</th>
       <th>Qty</th>
-      <th>Edit</th>
       <th>Delete</th>
     </tr>
   </table>
 
 
   <script>
+    // Numbers With Commas
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+    // Clear to Do List
+    const clearSurfboard = () => {
+      fetch('/surfboards', { method: 'DELETE' }).then(r => getSurfboards()).catch(e => console.log(e))
+    }
 
     //Add a Surfboard
     const addSurfboard = () => {
@@ -58,6 +67,10 @@
         })
       }).then(r => {
         document.querySelector('#name').value = ''
+        document.querySelector('#type').value = ''
+        document.querySelector('#price').value = ''
+        document.querySelector('#qty').value = ''
+
         getSurfboards()
       }).catch(e => console.log(e))
     }
@@ -67,14 +80,13 @@
       fetch('/surfboards')
         .then(r => r.json())
         .then(r => {
-          console.log(r)
           document.querySelector('#surfboardTable').innerHTML = `
           <tr>
             <th>Surfboard Name</th>
             <th>Type</th>
             <th>Price</th>
             <th>Qty</th>
-            <th>Edit</th>
+            <th>Total Revenue</th>
             <th>Delete</th>
           </tr>
           `
@@ -83,9 +95,19 @@
             tableItem.innerHTML = `
               <th>${item.name}</th>
               <th>${item.type}</th>
-              <th>${item.price}</th>
-              <th>${item.qty}</th>
-              <th><button value=${item.id} id="dltBTN">Edit</button></th>
+              <th>$ ${ numberWithCommas(item.price)}
+                <button value=${item.id} id="upPriceBTN">Up
+                  </button>
+                <button value=${item.id} id="downPriceBTN">down
+                  </button>
+                </th>
+              <th>${ numberWithCommas(item.qty)}
+                <button value=${item.id} id="upQtyBTN">Up
+                  </button>
+                <button value=${item.id} id="downQtyBTN">down
+                  </button>
+              </th>
+              <th>$${ numberWithCommas(item.price * item.qty)}</th>
               <th><button value=${item.id} id="dltBTN">Remove</button></th>
             `
             document.querySelector('#surfboardTable').appendChild(tableItem)
@@ -95,14 +117,67 @@
     }
 
     // Delete item from the Surfboard List
-    document.addEventListener('click', e =>{
-      if(e.target && e.target.id === 'dltBTN'){
-        fetch(`/surfboards/${e.target.value}`,{
+    document.addEventListener('click', e => {
+      if (e.target && e.target.id === 'dltBTN') {
+        fetch(`/surfboards/${e.target.value}`, {
           method: 'DELETE'
         }).then(r => getSurfboards()).catch(e => console.log(e))
       }
     })
 
+    // Update Price of Surfboard
+    document.addEventListener('click', e => {
+      if (e.target && e.target.id === "upPriceBTN") {
+        var priceIncrease = 20
+        fetch(`/surfboards/${e.target.value}`)
+          .then(r => r.json())
+          .then(r => {
+            fetch(`/surfboards/${e.target.value}`, {
+              method: 'PUT',
+              headers: { "Content-Type": "application/json; charset=utf-8", },
+              body: JSON.stringify({ price: r.price + priceIncrease })
+            }).then(r => getSurfboards())
+          })
+      } else if (e.target && e.target.id === "downPriceBTN") {
+        var priceDecrease = 20
+        fetch(`/surfboards/${e.target.value}`)
+          .then(r => r.json())
+          .then(r => {
+            fetch(`/surfboards/${e.target.value}`, {
+              method: 'PUT',
+              headers: { "Content-Type": "application/json; charset=utf-8", },
+              body: JSON.stringify({ price: r.price - priceDecrease })
+            }).then(r => getSurfboards())
+          })
+      }
+    })
+
+    // Update Qty of Surfboard
+      document.addEventListener('click', e => {
+        if (e.target && e.target.id === "upQtyBTN") {
+          var qtyIncrease = 1
+          fetch(`/surfboards/${e.target.value}`)
+            .then(r => r.json())
+            .then(r => {
+              fetch(`/surfboards/${e.target.value}`, {
+                method: 'PUT',
+                headers: { "Content-Type": "application/json; charset=utf-8", },
+                body: JSON.stringify({ qty: r.qty + qtyIncrease })
+              }).then(r => getSurfboards())
+            })
+        } else if (e.target && e.target.id === "downQtyBTN") {
+          var qtyDecrease = 1
+          fetch(`/surfboards/${e.target.value}`)
+            .then(r => r.json())
+            .then(r => {
+              fetch(`/surfboards/${e.target.value}`, {
+                method: 'PUT',
+                headers: { "Content-Type": "application/json; charset=utf-8", },
+                body: JSON.stringify({ qty: r.qty - qtyDecrease })
+              }).then(r => getSurfboards())
+            })
+        }
+      })
 
     getSurfboards()
 
