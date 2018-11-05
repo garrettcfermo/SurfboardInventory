@@ -9,15 +9,23 @@
 
   <!-- Style Sheets -->
   <link rel="stylesheet" href="./CSS/reset.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
   <link rel="stylesheet" href="./CSS/style.css">
-
 
 </head>
 
 <body>
   <h1>Surfboard Inventory</h1>
 
+  <hr>
+
   <h1 id="totalRevenue">Totol Revenue: $ 0</h1>
+  <h1 id="totalQty">Totol Qty: 0</h1>
+
+
+
+  <hr>
 
   <form>
     <label for="name">Surfboard Name:</label>
@@ -32,7 +40,7 @@
     <button onclick="clearSurfboard()">Clear</button>
   </form>
 
-  <!-- <ul id="surfboardList"></ul> -->
+  <hr>
 
   <table id="surfboardTable">
     <tr>
@@ -44,12 +52,21 @@
     </tr>
   </table>
 
+  <hr>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+
 
   <script>
     // Numbers With Commas
     function numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      }
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 
     // Clear to Do List
     const clearSurfboard = () => {
@@ -81,6 +98,8 @@
     // Retreive all of the Surfboards Info
     const getSurfboards = () => {
       var totalRevenue = 0
+      var totalQty = 0
+
       fetch('/surfboards')
         .then(r => r.json())
         .then(r => {
@@ -96,6 +115,8 @@
           `
           r.forEach(item => {
             totalRevenue += (item.price * item.qty)
+            totalQty += item.qty
+
             let tableItem = document.createElement('tr')
             tableItem.innerHTML = `
               <th>${item.name}</th>
@@ -117,7 +138,9 @@
             `
             document.querySelector('#surfboardTable').appendChild(tableItem)
           })
-          document.querySelector('#totalRevenue').innerHTML=`Totol Revenue: $${numberWithCommas(totalRevenue)}`
+
+          document.querySelector('#totalRevenue').innerHTML = `Totol Revenue: $${numberWithCommas(totalRevenue)}`
+          document.querySelector('#totalQty').innerHTML = `Totol Quanity: ${numberWithCommas(totalQty)}`
         })
         .catch(e => console.log(e))
     }
@@ -159,33 +182,37 @@
     })
 
     // Update Qty of Surfboard
-      document.addEventListener('click', e => {
-        if (e.target && e.target.id === "upQtyBTN") {
-          var qtyIncrease = 1
-          fetch(`/surfboards/${e.target.value}`)
-            .then(r => r.json())
-            .then(r => {
-              fetch(`/surfboards/${e.target.value}`, {
-                method: 'PUT',
-                headers: { "Content-Type": "application/json; charset=utf-8", },
-                body: JSON.stringify({ qty: r.qty + qtyIncrease })
-              }).then(r => getSurfboards())
-            })
-        } else if (e.target && e.target.id === "downQtyBTN") {
-          var qtyDecrease = 1
-          fetch(`/surfboards/${e.target.value}`)
-            .then(r => r.json())
-            .then(r => {
-              fetch(`/surfboards/${e.target.value}`, {
-                method: 'PUT',
-                headers: { "Content-Type": "application/json; charset=utf-8", },
-                body: JSON.stringify({ qty: r.qty - qtyDecrease })
-              }).then(r => getSurfboards())
-            })
-        }
-      })
+    document.addEventListener('click', e => {
+      if (e.target && e.target.id === "upQtyBTN") {
+        var qtyIncrease = 1
+        fetch(`/surfboards/${e.target.value}`)
+          .then(r => r.json())
+          .then(r => {
+            fetch(`/surfboards/${e.target.value}`, {
+              method: 'PUT',
+              headers: { "Content-Type": "application/json; charset=utf-8", },
+              body: JSON.stringify({ qty: r.qty + qtyIncrease })
+            }).then(r => getSurfboards())
+          })
+      } else if (e.target && e.target.id === "downQtyBTN") {
+        var qtyDecrease = 1
+        fetch(`/surfboards/${e.target.value}`)
+          .then(r => r.json())
+          .then(r => {
+            fetch(`/surfboards/${e.target.value}`, {
+              method: 'PUT',
+              headers: { "Content-Type": "application/json; charset=utf-8", },
+              body: JSON.stringify({ qty: r.qty - qtyDecrease })
+            }).then(r => getSurfboards())
+          })
+      }
+    })
 
     getSurfboards()
+
+
+
+
 
   </script>
 
