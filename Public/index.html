@@ -15,7 +15,10 @@
 </head>
 
 <body>
-  <H1>Surfboard Inventory</H1>
+  <h1>Surfboard Inventory</h1>
+
+  <h1 id="totalRevenue">Totol Revenue: $ 0</h1>
+
   <form>
     <label for="name">Surfboard Name:</label>
     <input type="text" id="name" name="name" placeholder="Crowd Killer" />
@@ -77,6 +80,7 @@
 
     // Retreive all of the Surfboards Info
     const getSurfboards = () => {
+      var totalRevenue = 0
       fetch('/surfboards')
         .then(r => r.json())
         .then(r => {
@@ -91,6 +95,7 @@
           </tr>
           `
           r.forEach(item => {
+            totalRevenue += (item.price * item.qty)
             let tableItem = document.createElement('tr')
             tableItem.innerHTML = `
               <th>${item.name}</th>
@@ -111,7 +116,8 @@
               <th><button value=${item.id} id="dltBTN">Remove</button></th>
             `
             document.querySelector('#surfboardTable').appendChild(tableItem)
-          });
+          })
+          document.querySelector('#totalRevenue').innerHTML=`Totol Revenue: $${numberWithCommas(totalRevenue)}`
         })
         .catch(e => console.log(e))
     }
