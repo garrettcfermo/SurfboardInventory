@@ -30,7 +30,7 @@
 
   <!-- <ul id="surfboardList"></ul> -->
 
-  <table id="surfboardList">
+  <table id="surfboardTable">
     <tr>
       <th>Surfboard Name</th>
       <th>Type</th>
@@ -67,7 +67,8 @@
       fetch('/surfboards')
         .then(r => r.json())
         .then(r => {
-          document.querySelector('#surfboardList').innerHTML = `
+          console.log(r)
+          document.querySelector('#surfboardTable').innerHTML = `
           <tr>
             <th>Surfboard Name</th>
             <th>Type</th>
@@ -84,16 +85,23 @@
               <th>${item.type}</th>
               <th>${item.price}</th>
               <th>${item.qty}</th>
-              <th><button value=${item.name} id="dltBTN">Edit</button></th>
-              <th><button value=${item.name} id="dltBTN">Remove</button></th>
+              <th><button value=${item.id} id="dltBTN">Edit</button></th>
+              <th><button value=${item.id} id="dltBTN">Remove</button></th>
             `
-            document.querySelector('#surfboardList').appendChild(tableItem)
+            document.querySelector('#surfboardTable').appendChild(tableItem)
           });
         })
         .catch(e => console.log(e))
     }
 
-
+    // Delete item from the Surfboard List
+    document.addEventListener('click', e =>{
+      if(e.target && e.target.id === 'dltBTN'){
+        fetch(`/surfboards/${e.target.value}`,{
+          method: 'DELETE'
+        }).then(r => getSurfboards()).catch(e => console.log(e))
+      }
+    })
 
 
     getSurfboards()

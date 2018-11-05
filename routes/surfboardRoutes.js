@@ -7,8 +7,8 @@ module.exports = app => {
       .catch(e => console.log(e))
   })
 
-  app.get('/surfboards/:name', (req, res) => {
-    db.surfboards.findOne({ where: { name: req.params.name } })
+  app.get('/surfboards/:id', (req, res) => {
+    db.surfboards.findOne({ where: { name: req.params.id} })
       .then(r => res.json(r))
       .catch(e => console.log(e))
   })
@@ -19,14 +19,14 @@ module.exports = app => {
       .catch(e => console.log(e))
   })
 
-  app.put('/surfboards/:name', (req, res) => {
-    db.surfboards.update(req.body, { where: { name: req.params.name } })
+  app.put('/surfboards/:id', (req, res) => {
+    db.surfboards.update(req.body, { where: { id: req.params.id } })
       .then(() => res.sendStatus(200))
       .catch(e => console.log(e))
   })
 
-  app.delete('/surfboards/:name', (req, res) => {
-    db.surfboards.destroy({ where: { name: req.params.name } })
+  app.delete('/surfboards/:id', (req, res) => {
+    db.surfboards.destroy({ where: { id: req.params.id } })
       .then(() => res.sendStatus(200))
       .catch(e => console.log(e))
   })
