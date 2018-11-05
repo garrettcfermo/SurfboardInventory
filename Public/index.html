@@ -26,6 +26,7 @@
       <p class="lead">Keep track of your stores surfboard Inventory with easy! </p>
 
       <hr>
+
       <!-- Surfboard Entry -->
       <form>
         <div class="row">
@@ -54,18 +55,30 @@
 
 
 
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <h1 id="totalRevenue">Total Revenue: $ 0</h1>
+      </div>
+      <div class="col-6">
+        <h1 id="totalQty">Total Qty: 0</h1>
+      </div>
+    </div>
+  </div>
 
-  <h1 id="totalRevenue">Totol Revenue: $ 0</h1>
-  <h1 id="totalQty">Totol Qty: 0</h1>
+  <!-- Bar Chart -->
+  <div class="container">
+    <canvas id="myChart" width="400" height="200"></canvas>
+    <hr>
+  </div>
 
-  <hr>
-
-  <hr>
+  <!-- Data Table -->
   <div class="container">
     <table class="table table-hover table-bordered" id="surfboardTable"></table>
   </div>
   <hr>
 
+  <!-- Java Scripts -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
@@ -74,7 +87,45 @@
     crossorigin="anonymous"></script>
 
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.js"></script>
   <script>
+
+     const Graph = (NameArr,QtyArr) => {
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+          // The type of chart we want to create
+          type: 'bar',
+
+          // The data for our dataset
+          data: {
+            labels: NameArr,
+            datasets: [{
+              label: "Qty",
+              backgroundColor: 'rgb(93, 139, 66)',
+              borderColor: 'rgb(93, 139, 66)',
+              data: QtyArr,
+            }]
+          },
+
+          // Configuration options go here
+          options: {
+            legend: {
+              display: false
+            },
+             scales: {
+              yAxes: [{
+                ticks: {
+                  suggestedMin: 0,
+                  suggestedMax: 40
+                }
+              }]
+            }
+          }
+        })
+      }
+
+
+
     // Numbers With Commas
     function numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -111,6 +162,8 @@
     const getSurfboards = () => {
       var totalRevenue = 0
       var totalQty = 0
+      var surfboardNameArr= []
+      var surfboardQtyArr=[]
 
       fetch('/surfboards')
         .then(r => r.json())
@@ -128,9 +181,13 @@
           </thead>
           `
           r.forEach(item => {
+
             totalRevenue += (item.price * item.qty)
             totalQty += item.qty
+            surfboardNameArr.push(item.name)
+            surfboardQtyArr.push(item.qty)
 
+            
             let tableItem = document.createElement('tr')
             tableItem.innerHTML = `
               <th>${item.name}</th>
@@ -153,8 +210,9 @@
             document.querySelector('#surfboardTable').appendChild(tableItem)
           })
 
-          document.querySelector('#totalRevenue').innerHTML = `Totol Revenue: $${numberWithCommas(totalRevenue)}`
-          document.querySelector('#totalQty').innerHTML = `Totol Quanity: ${numberWithCommas(totalQty)}`
+          document.querySelector('#totalRevenue').innerHTML = `Total Revenue: $${numberWithCommas(totalRevenue)}`
+          document.querySelector('#totalQty').innerHTML = `Total Quanity: ${numberWithCommas(totalQty)}`
+          Graph(surfboardNameArr,surfboardQtyArr)
         })
         .catch(e => console.log(e))
     }
@@ -224,8 +282,8 @@
 
     getSurfboards()
 
-
-
+   
+    
 
 
   </script>
