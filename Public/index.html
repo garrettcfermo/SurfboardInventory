@@ -13,6 +13,7 @@
     crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
     crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Abril+Fatface" rel="stylesheet">
   <link rel="stylesheet" href="./CSS/style.css">
 
 </head>
@@ -22,46 +23,21 @@
   <!-- Jumbotron -->
   <div class="jumbotron jumbotron-fluid">
     <div class="container">
+      <img src="./Images/backgroundImage_4.jpg" class="surfShackImg">
       <h1 class="display-3">Surfboard Inventory</h1>
-      <p class="lead">Keep track of your stores surfboard Inventory with easy! </p>
-
+      <p class="lead">Keep track of your stores surfboard Inventory with ease! </p>
       <hr>
-
-      <!-- Surfboard Entry -->
-      <form>
-        <div class="row">
-          <div class="col-4">
-            <input type="text" class="form-control" id="name" name="name" placeholder="Surfboard Name" />
-          </div>
-          <div class="col-4">
-            <input type="text" class="form-control" id="type" name="type" placeholder="Type" />
-          </div>
-          <div class="col-2">
-            <input type="text" class="form-control" id="price" name="price" placeholder="Price" />
-          </div>
-          <div class="col-2">
-            <input type="text" class="form-control" id="qty" name="qty" placeholder="Qty" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <button type="button" class="btn btn-primary" onclick="addSurfboard()"><i class="fas fa-plus"></i></button>
-            <button type="button" class="btn btn-secondary" onclick="clearSurfboard()"><i class="fas fa-trash-alt 7x"></i></button>
-          </div>
-        </div>
-      </form>
     </div>
   </div>
 
-
-
+  <!-- Total Information -->
   <div class="container">
-    <div class="row">
-      <div class="col-6">
-        <h1 id="totalRevenue">Total Revenue: $ 0</h1>
+    <div class="row justify-content-around">
+      <div class="col-4">
+        <h4 id="totalRevenue">Total Revenue: $ 0</h4>
       </div>
-      <div class="col-6">
-        <h1 id="totalQty">Total Qty: 0</h1>
+      <div class="col-4">
+        <h4 id="totalQty">Total Qty: 0</h4>
       </div>
     </div>
   </div>
@@ -75,8 +51,34 @@
   <!-- Data Table -->
   <div class="container">
     <table class="table table-hover table-bordered" id="surfboardTable"></table>
+    <hr>
   </div>
-  <hr>
+
+  <!-- Surfboard Entry -->
+  <div class="container surfboardEntry">
+    <form>
+      <div class="row">
+        <div class="col-3">
+          <input type="text" class="form-control" id="name" name="name" placeholder="Surfboard Name" />
+        </div>
+        <div class="col-3">
+          <input type="text" class="form-control" id="type" name="type" placeholder="Type" />
+        </div>
+        <div class="col-2">
+          <input type="text" class="form-control" id="price" name="price" placeholder="Price" />
+        </div>
+        <div class="col-2">
+          <input type="text" class="form-control" id="qty" name="qty" placeholder="Qty" />
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-primary" onclick="addSurfboard()"><i class="fas fa-plus"></i></button>
+          <button type="button" class="btn btn-secondary" onclick="clearSurfboard()"><i class="fas fa-trash-alt 7x"></i></button>
+        </div>
+      </div>
+    </form>
+    <hr>
+  </div>
+
 
   <!-- Java Scripts -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -85,46 +87,43 @@
     crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
     crossorigin="anonymous"></script>
-
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.js"></script>
+  
   <script>
+    // Create Graph Function
+    const Graph = (NameArr, QtyArr) => {
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'bar',
 
-     const Graph = (NameArr,QtyArr) => {
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var chart = new Chart(ctx, {
-          // The type of chart we want to create
-          type: 'bar',
+        // The data for our dataset
+        data: {
+          labels: NameArr,
+          datasets: [{
+            label: "Qty",
+            backgroundColor: 'rgb(93, 139, 66)',
+            borderColor: 'rgb(93, 139, 66)',
+            data: QtyArr,
+          }]
+        },
 
-          // The data for our dataset
-          data: {
-            labels: NameArr,
-            datasets: [{
-              label: "Qty",
-              backgroundColor: 'rgb(93, 139, 66)',
-              borderColor: 'rgb(93, 139, 66)',
-              data: QtyArr,
-            }]
+        // Configuration options go here
+        options: {
+          legend: {
+            display: false
           },
-
-          // Configuration options go here
-          options: {
-            legend: {
-              display: false
-            },
-             scales: {
-              yAxes: [{
-                ticks: {
-                  suggestedMin: 0,
-                  suggestedMax: 40
-                }
-              }]
-            }
+          scales: {
+            yAxes: [{
+              ticks: {
+                suggestedMin: 0,
+                suggestedMax: 40
+              }
+            }]
           }
-        })
-      }
-
-
+        }
+      })
+    }
 
     // Numbers With Commas
     function numberWithCommas(x) {
@@ -162,20 +161,20 @@
     const getSurfboards = () => {
       var totalRevenue = 0
       var totalQty = 0
-      var surfboardNameArr= []
-      var surfboardQtyArr=[]
+      var surfboardNameArr = []
+      var surfboardQtyArr = []
 
       fetch('/surfboards')
         .then(r => r.json())
         .then(r => {
           document.querySelector('#surfboardTable').innerHTML = `
-         <thead class="thead-light">
+         <thead class="thead">
             <tr>
               <th>Surfboard Name</th>
               <th>Type</th>
               <th>Price</th>
               <th>Qty</th>
-              <th>Total Revenue</th>
+              <th>Revenue</th>
               <th>Delete</th>
             </tr>
           </thead>
@@ -187,7 +186,7 @@
             surfboardNameArr.push(item.name)
             surfboardQtyArr.push(item.qty)
 
-            
+
             let tableItem = document.createElement('tr')
             tableItem.innerHTML = `
               <th>${item.name}</th>
@@ -212,7 +211,7 @@
 
           document.querySelector('#totalRevenue').innerHTML = `Total Revenue: $${numberWithCommas(totalRevenue)}`
           document.querySelector('#totalQty').innerHTML = `Total Quanity: ${numberWithCommas(totalQty)}`
-          Graph(surfboardNameArr,surfboardQtyArr)
+          Graph(surfboardNameArr, surfboardQtyArr)
         })
         .catch(e => console.log(e))
     }
@@ -282,8 +281,8 @@
 
     getSurfboards()
 
-   
-    
+
+
 
 
   </script>

@@ -1,9 +1,14 @@
 .jumbotron {
     text-align: center;
+    background-color: white;
+    font-family: 'Abril Fatface', cursive;
+    padding: 0 0;
 }
 
-.inventory-entry {
-    text-align: center;
+.display-3{
+    font-family: 'Abril Fatface', cursive;
+    text-decoration: underline;
+    font-size: 80px;
 }
 
 #upPriceBTN,
@@ -14,3 +19,23 @@
     margin: 2px;
 }
 
+.surfShackImg {
+    height: 200px;
+    width: 400px;
+    text-align: center;
+}
+
+#totalQty {
+    float: right;
+}
+
+.thead {
+    font-weight:bold;
+    text-align: center;
+    background-color: rgb(235, 233, 233);
+}
+
+.surfboardEntry {
+    text-align: center;
+    padding: 10px;
+}
