@@ -9,4 +9,4 @@ app.use(bodyparser.json())
 
 require('./routes/surfboardRoutes')(app)
 
-require('./models').sequelize.sync().then(() => app.listen(3000, _ => console.log('http://localhost:3000')))
+require('./models').sequelize.sync().then(() => app.listen(process.env.PORT || 3000, _ => console.log('http://localhost:3000'))).catch(e => console.log(e));
